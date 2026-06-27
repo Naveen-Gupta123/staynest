@@ -1,0 +1,105 @@
+{
+  "info": {
+    "name": "StayNest API Collection",
+    "description": "Manual testing collection for StayNest. NOTE: StayNest is a server-rendered Thymeleaf app, not a JSON REST API - most endpoints return HTML pages, not JSON. This collection is most useful for: (1) verifying pages load with the correct status code, (2) testing login/logout flow and session cookies, (3) confirming role-based access control actually blocks the right roles. Import this into Postman, then set the 'baseUrl' variable to http://localhost:8080.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "GET Login Page",
+          "request": { "method": "GET", "url": "{{baseUrl}}/auth/login" }
+        },
+        {
+          "name": "GET Register Page",
+          "request": { "method": "GET", "url": "{{baseUrl}}/auth/register" }
+        },
+        {
+          "name": "POST Register (Guest)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/x-www-form-urlencoded" }],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "fullName", "value": "Test Guest" },
+                { "key": "email", "value": "testguest@example.com" },
+                { "key": "password", "value": "Password123" },
+                { "key": "confirmPassword", "value": "Password123" },
+                { "key": "role", "value": "GUEST" }
+              ]
+            },
+            "url": "{{baseUrl}}/auth/register",
+            "description": "Expect a 302 redirect to /auth/login?registered=true on success. NOTE: this form is CSRF-protected when submitted from a real browser session; submitting raw from Postman without a valid CSRF token will be rejected by Spring Security with a 403. To test this properly, first GET the register page, scrape the hidden csrf token value and session cookie, then include both here."
+          }
+        },
+        {
+          "name": "POST Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/x-www-form-urlencoded" }],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "username", "value": "guest1@staynest.com" },
+                { "key": "password", "value": "Password123" }
+              ]
+            },
+            "url": "{{baseUrl}}/auth/login",
+            "description": "Same CSRF caveat as registration applies here."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Public Browsing (no login required)",
+      "item": [
+        { "name": "GET Homepage", "request": { "method": "GET", "url": "{{baseUrl}}/" } },
+        { "name": "GET Search Results", "request": { "method": "GET", "url": "{{baseUrl}}/properties?city=Goa" } },
+        { "name": "GET Property Detail", "request": { "method": "GET", "url": "{{baseUrl}}/properties/view/1" } }
+      ]
+    },
+    {
+      "name": "Guest Actions (requires login session cookie)",
+      "item": [
+        { "name": "GET My Bookings", "request": { "method": "GET", "url": "{{baseUrl}}/booking/my-bookings" } },
+        { "name": "GET Wishlist", "request": { "method": "GET", "url": "{{baseUrl}}/wishlist" } },
+        { "name": "GET New Booking Form", "request": { "method": "GET", "url": "{{baseUrl}}/booking/new/1" } }
+      ]
+    },
+    {
+      "name": "Host Actions (requires HOST role session)",
+      "item": [
+        { "name": "GET Host Dashboard", "request": { "method": "GET", "url": "{{baseUrl}}/host/dashboard" } },
+        { "name": "GET New Property Form", "request": { "method": "GET", "url": "{{baseUrl}}/host/properties/new" } },
+        { "name": "GET Host Bookings", "request": { "method": "GET", "url": "{{baseUrl}}/host/bookings" } }
+      ]
+    },
+    {
+      "name": "Admin Actions (requires ADMIN role session)",
+      "item": [
+        { "name": "GET Admin Dashboard", "request": { "method": "GET", "url": "{{baseUrl}}/admin/dashboard" } },
+        { "name": "GET Manage Users", "request": { "method": "GET", "url": "{{baseUrl}}/admin/users" } },
+        { "name": "GET Manage Properties", "request": { "method": "GET", "url": "{{baseUrl}}/admin/properties" } }
+      ]
+    },
+    {
+      "name": "Access Control Negative Tests",
+      "item": [
+        {
+          "name": "GET /admin/dashboard while logged in as GUEST (expect 403)",
+          "request": { "method": "GET", "url": "{{baseUrl}}/admin/dashboard" }
+        },
+        {
+          "name": "GET /host/dashboard while logged out (expect redirect to login)",
+          "request": { "method": "GET", "url": "{{baseUrl}}/host/dashboard" }
+        }
+      ]
+    }
+  ]
+}

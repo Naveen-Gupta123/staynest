@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<footer th:fragment="footer" class="sn-footer">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="sn-logo mb-3" style="color:#fff;">
+                    <span class="sn-logo-mark"></span> StayNest
+                </div>
+                <p class="small">A place for every kind of stay — apartments, villas, cabins, and more, booked directly from people who host them.</p>
+            </div>
+            <div class="col-md-2 col-6">
+                <h6>Explore</h6>
+                <p class="small mb-2"><a th:href="@{/properties}">All stays</a></p>
+                <p class="small mb-2"><a th:href="@{/}">Home</a></p>
+            </div>
+            <div class="col-md-2 col-6">
+                <h6>Host</h6>
+                <p class="small mb-2"><a th:href="@{/auth/register}">Become a host</a></p>
+                <p class="small mb-2"><a th:href="@{/host/dashboard}">Host dashboard</a></p>
+            </div>
+            <div class="col-md-4">
+                <h6>StayNest</h6>
+                <p class="small mb-0">Final Year MCA Major Project &middot; Built with Spring Boot, Thymeleaf &amp; MySQL.</p>
+            </div>
+        </div>
+        <hr class="mt-4" style="border-color:rgba(255,255,255,0.15);">
+        <p class="small mb-0 text-center" style="color:#8B8D94;">&copy; 2026 StayNest. Built for academic demonstration.</p>
+    </div>
+</footer>
+</body>
+</html>

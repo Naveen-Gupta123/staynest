@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Book your stay')}"></head>
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<div class="container py-5" style="max-width:560px;">
+    <h2 class="mb-4">Confirm your trip details</h2>
+
+    <div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+    <div class="sn-form-card">
+        <form th:action="@{/booking/create/{id}(id=${propertyId})}" th:object="${bookingRequest}" method="post">
+
+            <div class="row g-3 mb-3">
+                <div class="col-6">
+                    <label class="form-label">Check-in</label>
+                    <input type="date" th:field="*{checkIn}" class="form-control"
+                           th:classappend="${#fields.hasErrors('checkIn')} ? 'is-invalid'">
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('checkIn')}" th:errors="*{checkIn}"></div>
+                </div>
+                <div class="col-6">
+                    <label class="form-label">Check-out</label>
+                    <input type="date" th:field="*{checkOut}" class="form-control"
+                           th:classappend="${#fields.hasErrors('checkOut')} ? 'is-invalid'">
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('checkOut')}" th:errors="*{checkOut}"></div>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">Guests</label>
+                <input type="number" th:field="*{guests}" min="1" class="form-control"
+                       th:classappend="${#fields.hasErrors('guests')} ? 'is-invalid'">
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('guests')}" th:errors="*{guests}"></div>
+            </div>
+
+            <button type="submit" class="btn-sn-primary w-100">Request to book</button>
+            <p class="text-muted small text-center mt-3 mb-0">The host will confirm your dates. You won't be charged until they accept.</p>
+        </form>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

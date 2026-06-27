@@ -1,0 +1,57 @@
+# ===== Maven =====
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# ===== IDE: IntelliJ IDEA =====
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+# ===== IDE: VS Code =====
+.vscode/
+*.code-workspace
+
+# ===== IDE: Eclipse / STS =====
+.classpath
+.project
+.settings/
+bin/
+
+# ===== OS files =====
+.DS_Store
+Thumbs.db
+
+# ===== Logs =====
+*.log
+logs/
+
+# ===== Uploaded files (user content - never commit these) =====
+# Note: FileStorageUtil.java auto-creates this folder on first upload
+# if it's missing, so excluding its contents here is safe either way.
+uploads/*
+!uploads/.gitkeep
+
+# ===== Environment / secrets =====
+# If you create an application-secrets.properties or .env file for
+# real DB credentials in production, list it here so it never gets
+# committed to a public GitHub repo.
+application-local.properties
+*.env
+
+# ===== Compiled class files =====
+*.class
+
+# ===== Packaged archives =====
+*.jar
+*.war
+!.mvn/wrapper/maven-wrapper.jar

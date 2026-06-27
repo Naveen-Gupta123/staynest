@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!--
+  property-card fragment - used on homepage, search results, wishlist,
+  and host dashboard. Centralizing this means a design tweak only needs
+  to happen in ONE file instead of four.
+-->
+<div th:fragment="card(property)" class="col-sm-6 col-lg-4">
+    <a th:href="@{/properties/view/{id}(id=${property.id})}" class="sn-card d-block text-decoration-none">
+        <div class="sn-card-image-wrap">
+            <img th:if="${!property.images.isEmpty()}"
+                 th:src="@{${property.images.get(0).imageUrl}}"
+                 alt="Property photo">
+            <img th:unless="${!property.images.isEmpty()}"
+                 src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&h=400&fit=crop"
+                 alt="Property photo placeholder">
+            <span class="sn-card-badge" th:text="${property.type}">TYPE</span>
+        </div>
+        <div class="sn-card-body">
+            <div class="sn-card-title" th:text="${property.title}">Property Title</div>
+            <div class="sn-card-location">
+                <i class="bi bi-geo-alt"></i>
+                <span th:text="${property.city} + ', ' + ${property.state}">City, State</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="sn-card-price">
+                    ₹<span th:text="${property.pricePerNight}">0</span>
+                    <span>/ night</span>
+                </div>
+            </div>
+        </div>
+    </a>
+</div>
+</body>
+</html>

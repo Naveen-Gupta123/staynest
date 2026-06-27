@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Search stays')}"></head>
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<section class="sn-section-soft" style="padding: 28px 0;">
+    <div class="container">
+        <form th:action="@{/properties}" method="get" th:object="${searchRequest}" class="sn-search-bar row g-2 align-items-end">
+            <div class="col-md-2">
+                <label class="sn-search-field-label">City</label>
+                <input type="text" th:field="*{city}" class="form-control" placeholder="Any city">
+            </div>
+            <div class="col-md-2">
+                <label class="sn-search-field-label">State</label>
+                <input type="text" th:field="*{state}" class="form-control" placeholder="Any state">
+            </div>
+            <div class="col-md-2">
+                <label class="sn-search-field-label">Type</label>
+                <select th:field="*{type}" class="form-select">
+                    <option value="">Any type</option>
+                    <option value="APARTMENT">Apartment</option>
+                    <option value="VILLA">Villa</option>
+                    <option value="HOUSE">House</option>
+                    <option value="CABIN">Cabin</option>
+                    <option value="HOTEL_ROOM">Hotel Room</option>
+                </select>
+            </div>
+            <div class="col-md-1">
+                <label class="sn-search-field-label">Beds</label>
+                <input type="number" th:field="*{bedrooms}" min="1" class="form-control" placeholder="Any">
+            </div>
+            <div class="col-md-1">
+                <label class="sn-search-field-label">Guests</label>
+                <input type="number" th:field="*{guests}" min="1" class="form-control" placeholder="Any">
+            </div>
+            <div class="col-md-1">
+                <label class="sn-search-field-label">Min ₹</label>
+                <input type="number" th:field="*{minPrice}" min="0" class="form-control" placeholder="0">
+            </div>
+            <div class="col-md-1">
+                <label class="sn-search-field-label">Max ₹</label>
+                <input type="number" th:field="*{maxPrice}" min="0" class="form-control" placeholder="Any">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn-sn-primary w-100"><i class="bi bi-search"></i> Search</button>
+            </div>
+        </form>
+    </div>
+</section>
+
+<section class="sn-section">
+    <div class="container">
+        <p class="text-muted mb-4" th:text="${page.totalElements} + ' stays found'">0 stays found</p>
+
+        <div class="row g-4" th:if="${!properties.isEmpty()}">
+            <div th:replace="~{fragments/property-card :: card(${p})}" th:each="p : ${properties}"></div>
+        </div>
+
+        <div th:if="${properties.isEmpty()}" class="text-center py-5">
+            <i class="bi bi-emoji-frown" style="font-size:2rem; color:var(--color-ink-muted);"></i>
+            <p class="text-muted mt-2">No stays match those filters. Try widening your search.</p>
+        </div>
+
+        <!-- Pagination -->
+        <nav th:if="${page.totalPages > 1}" class="mt-5">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}"
+                    th:classappend="${i == page.number} ? 'active'">
+                    <a class="page-link"
+                       th:href="@{/properties(city=${searchRequest.city}, state=${searchRequest.state}, country=${searchRequest.country}, minPrice=${searchRequest.minPrice}, maxPrice=${searchRequest.maxPrice}, bedrooms=${searchRequest.bedrooms}, guests=${searchRequest.guests}, type=${searchRequest.type}, page=${i})"
+                       th:text="${i + 1}">1</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</section>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

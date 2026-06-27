@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Manage users')}"></head>
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<div class="container py-5">
+    <h2 class="mb-4">Manage users</h2>
+
+    <div class="table-responsive">
+        <table class="table sn-table align-middle">
+            <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+                <tr th:each="u : ${users}">
+                    <td th:text="${u.fullName}">Name</td>
+                    <td th:text="${u.email}">Email</td>
+                    <td th:text="${u.role}">ROLE</td>
+                    <td>
+                        <span class="badge-status" th:classappend="${u.enabled} ? 'badge-confirmed' : 'badge-rejected'"
+                              th:text="${u.enabled} ? 'Active' : 'Disabled'">Status</span>
+                    </td>
+                    <td>
+                        <form th:action="@{/admin/users/toggle/{id}(id=${u.id})}" method="post">
+                            <button type="submit" class="btn-sn-outline btn-sm" th:text="${u.enabled} ? 'Disable' : 'Enable'">Toggle</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

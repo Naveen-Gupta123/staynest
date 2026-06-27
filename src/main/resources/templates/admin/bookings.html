@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('All bookings')}"></head>
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<div class="container py-5">
+    <h2 class="mb-4">Recent bookings (platform-wide)</h2>
+
+    <div class="table-responsive">
+        <table class="table sn-table align-middle">
+            <thead><tr><th>Guest</th><th>Property</th><th>Dates</th><th>Total</th><th>Status</th></tr></thead>
+            <tbody>
+                <tr th:if="${bookings.isEmpty()}"><td colspan="5" class="text-center text-muted py-4">No bookings yet.</td></tr>
+                <tr th:each="b : ${bookings}">
+                    <td th:text="${b.guest.fullName}">Guest</td>
+                    <td th:text="${b.property.title}">Property</td>
+                    <td th:text="${b.checkIn} + ' → ' + ${b.checkOut}">Dates</td>
+                    <td>₹<span th:text="${b.totalPrice}">0</span></td>
+                    <td><span class="badge-status" th:classappend="'badge-' + ${#strings.toLowerCase(b.status)}" th:text="${b.status}">STATUS</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

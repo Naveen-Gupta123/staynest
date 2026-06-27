@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<nav th:fragment="navbar" class="sn-navbar">
+    <div class="container d-flex align-items-center justify-content-between">
+        <a th:href="@{/}" class="sn-logo">
+            <span class="sn-logo-mark"></span> StayNest
+        </a>
+
+        <div class="d-none d-md-flex align-items-center gap-1">
+            <a th:href="@{/}" class="sn-nav-link">Explore</a>
+
+            <!-- Visible only to logged-in GUESTs -->
+            <a th:href="@{/booking/my-bookings}" class="sn-nav-link" sec:authorize="hasRole('GUEST')">My Trips</a>
+            <a th:href="@{/wishlist}" class="sn-nav-link" sec:authorize="hasRole('GUEST')">Wishlist</a>
+
+            <!-- Visible only to HOSTs -->
+            <a th:href="@{/host/dashboard}" class="sn-nav-link" sec:authorize="hasRole('HOST')">Host Dashboard</a>
+
+            <!-- Visible only to ADMINs -->
+            <a th:href="@{/admin/dashboard}" class="sn-nav-link" sec:authorize="hasRole('ADMIN')">Admin</a>
+
+            <!-- Visible to any logged-in user -->
+            <a th:href="@{/profile}" class="sn-nav-link" sec:authorize="isAuthenticated()">Profile</a>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+            <!-- Shown only when NOT logged in -->
+            <div sec:authorize="!isAuthenticated()" class="d-flex gap-2">
+                <a th:href="@{/auth/login}" class="btn-sn-outline">Log in</a>
+                <a th:href="@{/auth/register}" class="btn-sn-primary">Sign up</a>
+            </div>
+
+            <!-- Shown only when logged in -->
+            <form sec:authorize="isAuthenticated()" th:action="@{/auth/logout}" method="post" class="d-flex align-items-center gap-2 m-0">
+                <span class="sn-nav-link d-none d-lg-inline" sec:authentication="name"></span>
+                <button type="submit" class="btn-sn-outline">Log out</button>
+            </form>
+        </div>
+    </div>
+</nav>
+</body>
+</html>

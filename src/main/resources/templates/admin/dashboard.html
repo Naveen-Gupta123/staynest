@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Admin dashboard')}"></head>
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<div class="container py-5">
+    <h2 class="mb-4">Admin dashboard</h2>
+
+    <div class="row g-3 mb-5">
+        <div class="col-md-3">
+            <div class="sn-stat-card">
+                <div class="sn-stat-icon" style="background:var(--color-accent-soft); color:var(--color-accent);"><i class="bi bi-people"></i></div>
+                <div><div class="sn-stat-number" th:text="${totalUsers}">0</div><div class="sn-stat-label">Total users</div></div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="sn-stat-card">
+                <div class="sn-stat-icon" style="background:var(--color-sage-soft); color:var(--color-sage);"><i class="bi bi-houses"></i></div>
+                <div><div class="sn-stat-number" th:text="${totalProperties}">0</div><div class="sn-stat-label">Active listings</div></div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="sn-stat-card">
+                <div class="sn-stat-icon" style="background:#FFF3DA; color:#8A6300;"><i class="bi bi-hourglass-split"></i></div>
+                <div><div class="sn-stat-number" th:text="${pendingBookings}">0</div><div class="sn-stat-label">Pending bookings</div></div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="sn-stat-card">
+                <div class="sn-stat-icon" style="background:#E5E9F5; color:#3B4C8C;"><i class="bi bi-calendar-check"></i></div>
+                <div><div class="sn-stat-number" th:text="${confirmedBookings}">0</div><div class="sn-stat-label">Confirmed bookings</div></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <h5 class="mb-3">Recent bookings</h5>
+            <div class="table-responsive">
+                <table class="table sn-table align-middle">
+                    <thead><tr><th>Guest</th><th>Property</th><th>Status</th></tr></thead>
+                    <tbody>
+                        <tr th:if="${recentBookings.isEmpty()}"><td colspan="3" class="text-center text-muted py-4">No bookings yet.</td></tr>
+                        <tr th:each="b : ${recentBookings}">
+                            <td th:text="${b.guest.fullName}">Guest</td>
+                            <td th:text="${b.property.title}">Property</td>
+                            <td><span class="badge-status" th:classappend="'badge-' + ${#strings.toLowerCase(b.status)}" th:text="${b.status}">STATUS</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <h5 class="mb-3">Top properties</h5>
+            <div class="sn-form-card">
+                <div th:if="${topProperties.isEmpty()}" class="text-muted text-center py-3">No data yet.</div>
+                <div class="d-flex justify-content-between py-2" th:each="p, iter : ${topProperties}" th:if="${iter.index < 5}"
+                     style="border-bottom:1px solid var(--color-border);">
+                    <span th:text="${iter.index + 1} + '. ' + ${p.title}">Property</span>
+                    <span class="text-muted" th:text="${p.city}">City</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-5 d-flex gap-3">
+        <a th:href="@{/admin/users}" class="btn-sn-outline">Manage users</a>
+        <a th:href="@{/admin/properties}" class="btn-sn-outline">Manage properties</a>
+        <a th:href="@{/admin/bookings}" class="btn-sn-outline">Manage bookings</a>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/head :: head(${property.title})}"></head>
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<div class="container py-4">
+
+    <div class="d-flex justify-content-between align-items-start mb-3 flex-wrap gap-2">
+        <div>
+            <h1 style="font-size:1.9rem;" th:text="${property.title}">Property Title</h1>
+            <p class="text-muted mb-0">
+                <i class="bi bi-geo-alt"></i>
+                <span th:text="${property.address} + ', ' + ${property.city} + ', ' + ${property.state} + ', ' + ${property.country}">Address</span>
+            </p>
+        </div>
+        <div sec:authorize="hasRole('GUEST')">
+            <form th:if="${isWishlisted == null || !isWishlisted}" th:action="@{/wishlist/add/{id}(id=${property.id})}" method="post">
+                <button type="submit" class="btn-sn-outline"><i class="bi bi-heart"></i> Save</button>
+            </form>
+            <form th:if="${isWishlisted != null and isWishlisted}" th:action="@{/wishlist/remove/{id}(id=${property.id})}" method="post">
+                <button type="submit" class="btn-sn-primary"><i class="bi bi-heart-fill"></i> Saved</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Image gallery -->
+    <div class="row g-2 mb-4" style="border-radius: var(--radius-lg); overflow:hidden;">
+        <div class="col-md-6" th:if="${!property.images.isEmpty()}">
+            <img th:src="@{${property.images.get(0).imageUrl}}" class="w-100" style="height:380px; object-fit:cover;" alt="Main photo">
+        </div>
+        <div class="col-md-6" th:if="${property.images.isEmpty()}">
+            <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=900&h=600&fit=crop" class="w-100" style="height:380px; object-fit:cover;" alt="Placeholder">
+        </div>
+        <div class="col-md-6">
+            <div class="row g-2">
+                <div class="col-6" th:each="img, iter : ${property.images}" th:if="${iter.index > 0 and iter.index <= 4}">
+                    <img th:src="@{${img.imageUrl}}" class="w-100" style="height:187px; object-fit:cover;" alt="Photo">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-5">
+        <!-- Left: details -->
+        <div class="col-lg-8">
+            <div class="d-flex gap-4 pb-4 mb-4" style="border-bottom:1px solid var(--color-border);">
+                <div><i class="bi bi-people"></i> <span th:text="${property.maxGuests}">4</span> guests</div>
+                <div><i class="bi bi-door-closed"></i> <span th:text="${property.bedrooms}">2</span> bedrooms</div>
+                <div><i class="bi bi-droplet"></i> <span th:text="${property.bathrooms}">1</span> bathrooms</div>
+                <div class="sn-rating" th:if="${averageRating > 0}">
+                    <i class="bi bi-star-fill star"></i> <span th:text="${averageRating}">4.5</span>
+                </div>
+            </div>
+
+            <h4>About this place</h4>
+            <p style="white-space: pre-line;" th:text="${property.description}">Description here.</p>
+
+            <h4 class="mt-4">What this place offers</h4>
+            <div class="row g-2 mb-4">
+                <div class="col-6" th:each="amenity : ${property.amenities != null ? property.amenities.split(',') : {}}">
+                    <i class="bi bi-check-circle text-success"></i> <span th:text="${amenity}">Amenity</span>
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- Reviews -->
+            <h4 class="mb-3">
+                Reviews
+                <span th:if="${averageRating > 0}">&middot; <i class="bi bi-star-fill star"></i> <span th:text="${averageRating}">4.5</span></span>
+            </h4>
+
+            <div sec:authorize="hasRole('GUEST')" class="mb-4">
+                <form th:action="@{/review/add/{id}(id=${property.id})}" th:object="${reviewRequest}" method="post" class="sn-form-card">
+                    <label class="form-label">Leave a review</label>
+                    <select th:field="*{rating}" class="form-select mb-2" style="max-width:160px;">
+                        <option value="5">5 - Excellent</option>
+                        <option value="4">4 - Good</option>
+                        <option value="3">3 - Average</option>
+                        <option value="2">2 - Below average</option>
+                        <option value="1">1 - Poor</option>
+                    </select>
+                    <textarea th:field="*{comment}" class="form-control mb-2" rows="2" placeholder="Share your experience..."></textarea>
+                    <button type="submit" class="btn-sn-primary">Post review</button>
+                </form>
+            </div>
+
+            <div th:if="${reviews.isEmpty()}" class="text-muted">No reviews yet — be the first to share your experience.</div>
+
+            <div th:each="review : ${reviews}" class="mb-3 pb-3" style="border-bottom:1px solid var(--color-border);">
+                <div class="d-flex justify-content-between">
+                    <strong th:text="${review.user.fullName}">Guest Name</strong>
+                    <span class="sn-rating"><i class="bi bi-star-fill star"></i> <span th:text="${review.rating}">5</span></span>
+                </div>
+                <p class="mb-0 text-muted" th:text="${review.comment}">Review comment</p>
+            </div>
+        </div>
+
+        <!-- Right: booking widget -->
+        <div class="col-lg-4">
+            <div class="sn-form-card" style="position: sticky; top: 90px;">
+                <div class="d-flex justify-content-between align-items-baseline mb-3">
+                    <div><span style="font-size:1.4rem; font-weight:700;">₹<span th:text="${property.pricePerNight}">0</span></span> <span class="text-muted">/ night</span></div>
+                </div>
+
+                <div sec:authorize="hasRole('GUEST')">
+                    <a th:href="@{/booking/new/{id}(id=${property.id})}" class="btn-sn-primary w-100 d-block text-center">Book now</a>
+                </div>
+                <div sec:authorize="!isAuthenticated()">
+                    <a th:href="@{/auth/login}" class="btn-sn-primary w-100 d-block text-center">Log in to book</a>
+                </div>
+                <div sec:authorize="hasRole('HOST')">
+                    <p class="text-muted small mb-0">Hosts book stays using a guest account.</p>
+                </div>
+                <p class="text-muted small text-center mt-3 mb-0">You won't be charged yet</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

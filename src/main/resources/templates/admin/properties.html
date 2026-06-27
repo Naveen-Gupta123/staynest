@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Manage properties')}"></head>
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<div class="container py-5">
+    <h2 class="mb-4">Manage properties</h2>
+
+    <div class="table-responsive">
+        <table class="table sn-table align-middle">
+            <thead><tr><th>Title</th><th>Host</th><th>City</th><th>Price/night</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+                <tr th:each="p : ${properties}">
+                    <td th:text="${p.title}">Title</td>
+                    <td th:text="${p.host.fullName}">Host</td>
+                    <td th:text="${p.city}">City</td>
+                    <td>₹<span th:text="${p.pricePerNight}">0</span></td>
+                    <td>
+                        <span class="badge-status" th:classappend="${p.active} ? 'badge-confirmed' : 'badge-rejected'"
+                              th:text="${p.active} ? 'Active' : 'Hidden'">Status</span>
+                    </td>
+                    <td>
+                        <form th:action="@{/admin/properties/toggle/{id}(id=${p.id})}" method="post">
+                            <button type="submit" class="btn-sn-outline btn-sm" th:text="${p.active} ? 'Hide' : 'Activate'">Toggle</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

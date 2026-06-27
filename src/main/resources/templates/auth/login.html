@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Log in')}"></head>
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<div class="sn-auth-wrap">
+    <div class="container">
+        <div class="sn-auth-card">
+            <span class="sn-eyebrow">Welcome back</span>
+            <h1 style="font-size:1.8rem;" class="mb-4">Log in to StayNest</h1>
+
+            <div class="alert alert-success" th:if="${param.registered}">
+                Account created! Log in below to continue.
+            </div>
+            <div class="alert alert-success" th:if="${param.logout}">
+                You've been logged out.
+            </div>
+            <div class="alert alert-danger" th:if="${param.error}">
+                Incorrect email or password. Please try again.
+            </div>
+
+            <!--
+              This form posts to /auth/login, which Spring Security's
+              formLogin() intercepts directly - no AuthController method
+              handles this POST. Thymeleaf automatically injects a hidden
+              CSRF token into this form since we used th:action.
+            -->
+            <form th:action="@{/auth/login}" method="post">
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="username" class="form-control" required autofocus placeholder="you@example.com">
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">Password</label>
+                    <input type="password" name="password" class="form-control" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn-sn-primary w-100">Log in</button>
+            </form>
+
+            <p class="text-center text-muted mt-4 mb-0">
+                New to StayNest? <a th:href="@{/auth/register}" style="color:var(--color-accent); font-weight:600;">Create an account</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

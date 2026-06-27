@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Sign up')}"></head>
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<div class="sn-auth-wrap">
+    <div class="container">
+        <div class="sn-auth-card">
+            <span class="sn-eyebrow">Join StayNest</span>
+            <h1 style="font-size:1.8rem;" class="mb-4">Create your account</h1>
+
+            <div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+            <form th:action="@{/auth/register}" th:object="${registerRequest}" method="post">
+
+                <div class="mb-3">
+                    <label class="form-label">I want to...</label>
+                    <div class="sn-role-toggle">
+                        <label class="sn-role-option" id="guestOption">
+                            <input type="radio" th:field="*{role}" value="GUEST" onclick="selectRole('guestOption','hostOption')">
+                            <i class="bi bi-suitcase2 me-1"></i> Book stays
+                        </label>
+                        <label class="sn-role-option" id="hostOption">
+                            <input type="radio" th:field="*{role}" value="HOST" onclick="selectRole('hostOption','guestOption')">
+                            <i class="bi bi-house-door me-1"></i> Host my place
+                        </label>
+                    </div>
+                    <div class="text-danger small" th:if="${#fields.hasErrors('role')}" th:errors="*{role}"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Full name</label>
+                    <input type="text" th:field="*{fullName}" class="form-control" placeholder="Your name"
+                           th:classappend="${#fields.hasErrors('fullName')} ? 'is-invalid'">
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" th:field="*{email}" class="form-control" placeholder="you@example.com"
+                           th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'">
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input type="password" th:field="*{password}" class="form-control" placeholder="At least 6 characters"
+                           th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'">
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Confirm password</label>
+                    <input type="password" th:field="*{confirmPassword}" class="form-control"
+                           th:classappend="${#fields.hasErrors('confirmPassword')} ? 'is-invalid'">
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></div>
+                </div>
+
+                <button type="submit" class="btn-sn-primary w-100">Create account</button>
+            </form>
+
+            <p class="text-center text-muted mt-4 mb-0">
+                Already have an account? <a th:href="@{/auth/login}" style="color:var(--color-accent); font-weight:600;">Log in</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function selectRole(selectedId, otherId) {
+        document.getElementById(selectedId).classList.add('selected');
+        document.getElementById(otherId).classList.remove('selected');
+    }
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Host dashboard')}"></head>
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Your listings</h2>
+        <a th:href="@{/host/properties/new}" class="btn-sn-primary"><i class="bi bi-plus-lg"></i> Add a listing</a>
+    </div>
+
+    <div class="row g-4 mb-5" th:if="${!properties.isEmpty()}">
+        <div class="col-sm-6 col-lg-4" th:each="property : ${properties}">
+            <div class="sn-card">
+                <div class="sn-card-image-wrap">
+                    <img th:if="${!property.images.isEmpty()}" th:src="@{${property.images.get(0).imageUrl}}" alt="Property">
+                    <img th:unless="${!property.images.isEmpty()}" src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&h=400&fit=crop" alt="Placeholder">
+                </div>
+                <div class="sn-card-body">
+                    <div class="sn-card-title" th:text="${property.title}">Title</div>
+                    <div class="sn-card-location" th:text="${property.city} + ', ' + ${property.state}">Location</div>
+                    <div class="sn-card-price mb-3">₹<span th:text="${property.pricePerNight}">0</span> <span>/ night</span></div>
+                    <div class="d-flex gap-2">
+                        <a th:href="@{/host/properties/edit/{id}(id=${property.id})}" class="btn-sn-outline btn-sm flex-fill text-center">Edit</a>
+                        <form th:action="@{/host/properties/delete/{id}(id=${property.id})}" method="post" class="flex-fill">
+                            <button type="submit" class="btn-sn-danger btn-sm w-100" onclick="return confirm('Delete this listing permanently?');">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${properties.isEmpty()}" class="text-center py-5 mb-5">
+        <p class="text-muted">You haven't listed a property yet.</p>
+        <a th:href="@{/host/properties/new}" class="btn-sn-primary">Create your first listing</a>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">Recent booking requests</h3>
+        <a th:href="@{/host/bookings}" class="sn-nav-link fw-semibold">Manage all &rarr;</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table sn-table align-middle">
+            <thead>
+                <tr><th>Guest</th><th>Property</th><th>Dates</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+                <tr th:if="${bookings.isEmpty()}"><td colspan="4" class="text-center text-muted py-4">No bookings yet.</td></tr>
+                <tr th:each="b, bookingStat : ${bookings}" th:if="${bookingStat.index < 5}">
+                    <td th:text="${b.guest.fullName}">Guest</td>
+                    <td th:text="${b.property.title}">Property</td>
+                    <td th:text="${b.checkIn} + ' → ' + ${b.checkOut}">Dates</td>
+                    <td><span class="badge-status" th:classappend="'badge-' + ${#strings.toLowerCase(b.status)}" th:text="${b.status}">STATUS</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

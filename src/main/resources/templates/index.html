@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Find your stay')}"></head>
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<section class="sn-hero">
+    <div class="container">
+        <span class="sn-eyebrow">Wherever you're headed</span>
+        <h1>Stay somewhere<br>that feels like yours.</h1>
+        <p class="lede">Apartments, villas, cabins and hotel rooms — booked straight from the people who host them. No middlemen, no markup surprises.</p>
+
+        <form th:action="@{/properties}" method="get" class="sn-search-bar row g-2 align-items-end">
+            <div class="col-md-3">
+                <label class="sn-search-field-label">City</label>
+                <input type="text" name="city" class="form-control" placeholder="Where to?">
+            </div>
+            <div class="col-md-2">
+                <label class="sn-search-field-label">Type</label>
+                <select name="type" class="form-select">
+                    <option value="">Any type</option>
+                    <option value="APARTMENT">Apartment</option>
+                    <option value="VILLA">Villa</option>
+                    <option value="HOUSE">House</option>
+                    <option value="CABIN">Cabin</option>
+                    <option value="HOTEL_ROOM">Hotel Room</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="sn-search-field-label">Guests</label>
+                <input type="number" name="guests" min="1" class="form-control" placeholder="Add guests">
+            </div>
+            <div class="col-md-2">
+                <label class="sn-search-field-label">Max price / night</label>
+                <input type="number" name="maxPrice" min="0" class="form-control" placeholder="Any">
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn-sn-primary w-100">
+                    <i class="bi bi-search"></i> Search stays
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
+
+<section class="sn-section">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-baseline mb-4">
+            <h2 style="font-size:1.7rem;">Stays worth waking up in</h2>
+            <a th:href="@{/properties}" class="sn-nav-link fw-semibold">View all &rarr;</a>
+        </div>
+
+        <div class="row g-4" th:if="${!properties.isEmpty()}">
+            <div th:replace="~{fragments/property-card :: card(${p})}" th:each="p : ${properties}"></div>
+        </div>
+
+        <div th:if="${properties.isEmpty()}" class="text-center py-5">
+            <p class="text-muted">No listings yet — be the first host to list a stay.</p>
+            <a th:href="@{/auth/register}" class="btn-sn-primary">Become a host</a>
+        </div>
+    </div>
+</section>
+
+<section class="sn-section sn-section-soft">
+    <div class="container text-center">
+        <span class="sn-eyebrow">For hosts</span>
+        <h2 class="mb-3" style="font-size:1.9rem;">Turn your space into income</h2>
+        <p class="text-muted mx-auto mb-4" style="max-width:520px;">List your apartment, villa, cabin, or spare room. You set the price, the calendar, and the rules — StayNest handles the bookings.</p>
+        <a th:href="@{/auth/register}" class="btn-sn-primary">Start hosting</a>
+    </div>
+</section>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

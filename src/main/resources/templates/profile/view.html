@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('My profile')}"></head>
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<div class="container py-5" style="max-width:640px;">
+    <h2 class="mb-4">My profile</h2>
+
+    <div class="alert alert-success" th:if="${param.updated}">Profile updated successfully.</div>
+    <div class="alert alert-success" th:if="${param.passwordChanged}">Password changed successfully.</div>
+
+    <div class="sn-form-card mb-4">
+        <div class="d-flex align-items-center gap-3 mb-4">
+            <img th:if="${user.profileImage != null}" th:src="@{${user.profileImage}}"
+                 style="width:64px;height:64px;border-radius:50%;object-fit:cover;" alt="Profile">
+            <i th:unless="${user.profileImage != null}" class="bi bi-person-circle" style="font-size:64px; color:var(--color-ink-muted);"></i>
+            <div>
+                <h5 class="mb-0" th:text="${user.fullName}">Name</h5>
+                <span class="text-muted small" th:text="${user.role}">ROLE</span>
+            </div>
+        </div>
+
+        <form th:action="@{/profile/update}" th:object="${profileUpdateRequest}" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label class="form-label">Full name</label>
+                <input type="text" th:field="*{fullName}" class="form-control"
+                       th:classappend="${#fields.hasErrors('fullName')} ? 'is-invalid'">
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" th:value="${user.email}" disabled>
+                <div class="form-text">Email cannot be changed.</div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Phone</label>
+                <input type="text" th:field="*{phone}" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Bio</label>
+                <textarea th:field="*{bio}" rows="3" class="form-control"
+                          th:classappend="${#fields.hasErrors('bio')} ? 'is-invalid'"></textarea>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('bio')}" th:errors="*{bio}"></div>
+            </div>
+            <div class="mb-4">
+                <label class="form-label">Profile picture</label>
+                <input type="file" name="profileImage" class="form-control" accept="image/*">
+            </div>
+            <button type="submit" class="btn-sn-primary">Save changes</button>
+        </form>
+    </div>
+
+    <div class="sn-form-card">
+        <h5 class="mb-3">Change password</h5>
+        <div class="alert alert-danger" th:if="${passwordError}" th:text="${passwordError}"></div>
+        <form th:action="@{/profile/change-password}" th:object="${changePasswordRequest}" method="post">
+            <div class="mb-3">
+                <label class="form-label">Current password</label>
+                <input type="password" th:field="*{currentPassword}" class="form-control"
+                       th:classappend="${#fields.hasErrors('currentPassword')} ? 'is-invalid'">
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('currentPassword')}" th:errors="*{currentPassword}"></div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">New password</label>
+                <input type="password" th:field="*{newPassword}" class="form-control"
+                       th:classappend="${#fields.hasErrors('newPassword')} ? 'is-invalid'">
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}"></div>
+            </div>
+            <div class="mb-4">
+                <label class="form-label">Confirm new password</label>
+                <input type="password" th:field="*{confirmPassword}" class="form-control"
+                       th:classappend="${#fields.hasErrors('confirmPassword')} ? 'is-invalid'">
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></div>
+            </div>
+            <button type="submit" class="btn-sn-outline">Update password</button>
+        </form>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

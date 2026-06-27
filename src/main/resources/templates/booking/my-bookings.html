@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('My trips')}"></head>
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<div class="container py-5">
+    <h2 class="mb-4">My trips</h2>
+
+    <div th:if="${bookings.isEmpty()}" class="text-center py-5">
+        <p class="text-muted">No trips booked yet.</p>
+        <a th:href="@{/}" class="btn-sn-primary">Explore stays</a>
+    </div>
+
+    <div class="sn-form-card mb-3" th:each="booking : ${bookings}">
+        <div class="row align-items-center">
+            <div class="col-md-5">
+                <h5 class="mb-1" th:text="${booking.property.title}">Property</h5>
+                <p class="text-muted small mb-0" th:text="${booking.property.city} + ', ' + ${booking.property.country}">Location</p>
+            </div>
+            <div class="col-md-3">
+                <p class="mb-0 small text-muted">Dates</p>
+                <p class="mb-0" th:text="${booking.checkIn} + ' → ' + ${booking.checkOut}">Dates</p>
+            </div>
+            <div class="col-md-2">
+                <span class="badge-status"
+                      th:classappend="'badge-' + ${#strings.toLowerCase(booking.status)}"
+                      th:text="${booking.status}">STATUS</span>
+            </div>
+            <div class="col-md-2 text-end">
+                <p class="fw-bold mb-1">₹<span th:text="${booking.totalPrice}">0</span></p>
+                <form th:if="${booking.status.name() == 'PENDING' or booking.status.name() == 'CONFIRMED'}"
+                      th:action="@{/booking/cancel/{id}(id=${booking.id})}" method="post">
+                    <button type="submit" class="btn-sn-danger btn-sm" onclick="return confirm('Cancel this booking?');">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
